@@ -1,6 +1,7 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from .database import Base
+from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, text
+from sqlalchemy.ext.declarative import declarative_base
 
+Base = declarative_base()
 
 class Mensagem(Base):
     __tablename__ = "message"
@@ -9,5 +10,5 @@ class Mensagem(Base):
     content = Column(String, nullable=False)
     published = Column(Boolean, server_default="True", nullable=False)
     created_at = Column(
-        #TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False
+        TIMESTAMP(timezone=True), server_default=text("now()"), nullable=False
     )

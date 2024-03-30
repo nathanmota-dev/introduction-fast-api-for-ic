@@ -1,22 +1,22 @@
 from typing import Optional
 from fastapi import FastAPI, HTTPException, status, Depends
 from pydantic import BaseModel
-#from . import models
-#from .database import engine, get_db
-#from sqlalchemy.orm import Session
+from . import models
+from .database import engine, get_db
+from sqlalchemy.orm import Session
 
 
-#models.Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 
-#app.get("/sqlalchemy")
+app.get("/sqlalchemy")
 
 
-# def test(db: Session = Depends(get_db)):
-#    all_messages = db.query(models.Message).all()
-#    return {"Mensagem": all_messages}
+def test(db: Session = Depends(get_db)):
+    all_messages = db.query(models.Message).all()
+    return {"Mensagem": all_messages}
 
 
 class Message(BaseModel):
