@@ -38,14 +38,18 @@ def read_root():
 
 
 @app.post("/create", status_code=status.HTTP_201_CREATED)
-def create_values(new_message: Message):
-    try:
-        dict_message = new_message.model_dump()
-        dict_message["id"] = my_messages[-1]["id"] + 1
-        my_messages.append(dict_message)
-        return {"Mensagem": my_messages}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+def create_values(new_message: Message, db: Session = Depends(get_db)):
+    # create_message = models.Message(**new_message.model_dump())
+    create_message = models.Message(
+        title=new_message.title,
+        content=new_message.content,
+        published=new_message.published,
+        rating=new_message.rating,
+    )
+    db.add(create_message)
+    db.commit()
+    db.refresh(create_message)
+    return {"Mensagem Criada": create_message}
 
 
 def find_message_for_id(message, id):
@@ -56,10 +60,12 @@ def find_message_for_id(message, id):
 
 
 @app.get("/messages/{id}")
-def get_msg(id: int):
-    found_message = find_message_for_id(my_messages, int(id))
+def get_msg(id: int, db: Session = Depends(get_db)):
+    found_message = db.query(models.Message).filter(models.Message.id == id).first()
     if not found_message:
-        raise HTTPException(status_code=404, detail="Mensagem não encontrada")
+        raise HTTPException(
+            status_code=404, detail=f"Mensagem com o id {id} não encontrada"
+        )
     return {"Mensagem Encontrada": found_message}
 
 
