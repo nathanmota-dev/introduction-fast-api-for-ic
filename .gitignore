@@ -1,5 +1,6 @@
 .env
 myenv/
+app/__pycache__/
 __pycache__/
 *.pyc
 *.log
